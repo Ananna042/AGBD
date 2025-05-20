@@ -82,20 +82,22 @@ group by c.name
 --actividad 8
 SELECT
   a.actor_id,
-  a.first_name || ' ' || a.last_name AS nombre_completo,
-  COUNT(fa.film_id) AS film_count
+  a.first_name as nombre,
+  a.last_name AS apellido,
+  COUNT(fa.film_id) AS cantidad_pelis
 FROM actor a
 JOIN film_actor fa ON a.actor_id = fa.actor_id
 GROUP BY a.actor_id, a.first_name, a.last_name
-ORDER BY film_count DESC
+ORDER BY cantidad_pelis DESC
 LIMIT 10;
+
 
 --ACT 9
 SELECT
-   ad.address || ', '|| ci.city || ', '|| co.country AS localidad,
+   ad.address as localidad,
+   ci.city as ciudad,
+   co.country AS pais,
    count(i.inventory_id) as inventario_total
-
-
 from inventory i
 join store s on i.store_id = s.store_id
 join address ad on s.address_id = ad.address_id
@@ -107,7 +109,9 @@ order by inventario_total DESC;
 
 --ACT 10
 SELECT
- ad.address ||', '|| ci.city ||', '|| co.country as localidad,
+ ad.address as localidad,
+ ci.city as ciudad,
+ co.country as pais,
  count(DISTINCT i.film_id) as film_distinta
  from inventory i
  join store s on i.store_id = s.store_id
@@ -116,7 +120,6 @@ SELECT
  join country co on ci.country_id = co.country_id
  group by ad.address, ci.city, co.country
  order by film_distinta DESC;
-
 
 --ACT 11
 SELECT
@@ -160,14 +163,49 @@ GROUP BY c.customer_id
 ORDER BY total_pagado DESC;
 
 --act 16
-select 
- f.title, 
- f.length, 
- a.first_name a.last_name AS  nombre_actor
- MIN(f.length) AS pelis_cortas--terminarr
- 
+SELECT title as titulo, length as duracion,first_name as actor FROM film
+INNER JOIN film_actor on film_actor.film_id = film.film_id
+INNER JOIN actor on actor.actor_id = film_actor.actor_id
+ORDER by length ASC
 
- 
- 
+--act17
+SELECT last_name as apellido,
+city as ciudad,
+country as pais,
+address as localidad,
+amount from rental r
+INNER JOIN payment p on p.rental_id = r.rental_id
+INNER JOIN customer c on c.customer_id = r.customer_id
+INNER JOIN address a on a.address_id = c.address_id
+INNER JOIN city ci on ci.city_id = a.city_id
+INNER JOIN country co on co.country_id = ci.country_id 
+ORDER by amount ASC
 
+--act 18
 
+insert into actor (actor_id,first_name,last_name,last_update)
+VALUES("201","ana","porco","2020-11-25");
+
+--act 19
+insert into actor (actor_id,first_name,last_name,last_update)
+VALUES("202","evelyn","morales","2020-13-22"),
+      ("203","agostina","siles","2020-29-03")
+
+--act 20
+UPDATE actor
+SET first_name = "Evelyn", last_name = "Morales"
+WHERE first_name = "evelyn";
+UPDATE actor
+SET first_name = "Agostina", last_name = "Siles"
+WHERE first_name = "agostina";
+UPDATE actor
+SET first_name = "Ana", last_name = "Porco"
+WHERE first_name = "ana";
+
+--act 21
+DELETE FROM actor
+WHERE first_name = "Ana";
+DELETE FROM actor
+WHERE first_name = "Evelyn";
+DELETE FROM actor
+WHERE first_name = "Agostina";
